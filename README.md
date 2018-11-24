@@ -6,5 +6,5 @@ Ce repository contiendra:
 - Le code réalisé
 
 Définition des branches:
-- La branche master contient la dernière version du code.
-- AAA TOBECOMPLETED AAA
+- La branche master contiendra la version du code validé la plus récente + fichiers annexes
+- La branche AAA TOBECOMPLETED AAA
