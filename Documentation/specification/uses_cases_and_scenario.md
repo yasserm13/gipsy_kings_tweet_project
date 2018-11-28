@@ -4,7 +4,7 @@
 - 3: Authentification
 
 # Description des scénarios identifiés pour Gérer compte:
-- Créer un compte
+- [Créer un compte](./scenarios_gerer_compte/creer_compte.md)
 - Supprimer un compte
 - Modifier un compte -pour la V2-
 
@@ -18,3 +18,5 @@
 - Se logguer
 - Se déconnecter
 
+# Schema
+- ![uses case](./schemas/uses_cases.svg)
