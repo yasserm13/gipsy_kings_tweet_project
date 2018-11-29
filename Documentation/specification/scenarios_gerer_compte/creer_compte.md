@@ -17,4 +17,4 @@
 ## Extensions :
 
 - 4a. Cette adresse mail est déjà utilisée : le serveur renvoie une erreur code 403 (Le serveur a compris la requête, mais refuse de l'exécuter).
-- 7a. Une autre action a relance le compteur de 5 minnte
+- 7a. Une autre action a relance le compteur de 5 minutes
