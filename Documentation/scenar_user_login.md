@@ -10,12 +10,12 @@ L'utilisateur n'est pas connecté
 4. Le système analyse les informations de l'utilisateur
 
 ### Extensions:
-2a. L'utilisateur ne renseigne pas au moins l'une des deux informations (mot de passe et/ou login)
+2. a) L'utilisateur ne renseigne pas au moins l'une des deux informations (mot de passe et/ou login)
 	- 1: L'utilisateur ne peut pas lancer la connexion
 	
-4a. Le couple adresse mail/mot de passe n'existe pas en base
+4. a) Le couple adresse mail/mot de passe n'existe pas en base
 	- 1: Le système renvoie le code erreur XXXX
 
-4b. Le couple adresse mail/mot de passe existe
+4. b) Le couple adresse mail/mot de passe existe
 	- 1: Le systèeme renvoi le code 200
 	- 2: Le système renvoie un token d'authentification
