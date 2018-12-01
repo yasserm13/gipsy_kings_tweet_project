@@ -24,7 +24,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-import com.gipsy.kings.tweet.model.Member;
+import com.gipsy.kings.tweet.model.Tweet;
 
 @ApplicationScoped
 public class MemberRepository {
@@ -32,14 +32,14 @@ public class MemberRepository {
     @Inject
     private EntityManager em;
 
-    public Member findById(Long id) {
-        return em.find(Member.class, id);
+    public Tweet findById(Long id) {
+        return em.find(Tweet.class, id);
     }
 
-    public Member findByEmail(String email) {
+    public Tweet findByEmail(String email) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Member> criteria = cb.createQuery(Member.class);
-        Root<Member> member = criteria.from(Member.class);
+        CriteriaQuery<Tweet> criteria = cb.createQuery(Tweet.class);
+        Root<Tweet> member = criteria.from(Tweet.class);
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new
         // feature in JPA 2.0
         // criteria.select(member).where(cb.equal(member.get(Member_.name), email));
@@ -47,10 +47,10 @@ public class MemberRepository {
         return em.createQuery(criteria).getSingleResult();
     }
 
-    public List<Member> findAllOrderedByName() {
+    public List<Tweet> findAllOrderedByName() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Member> criteria = cb.createQuery(Member.class);
-        Root<Member> member = criteria.from(Member.class);
+        CriteriaQuery<Tweet> criteria = cb.createQuery(Tweet.class);
+        Root<Tweet> member = criteria.from(Tweet.class);
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new
         // feature in JPA 2.0
         // criteria.select(member).orderBy(cb.asc(member.get(Member_.name)));

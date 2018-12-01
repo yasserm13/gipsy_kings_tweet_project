@@ -16,7 +16,7 @@
  */
 package com.gipsy.kings.tweet.service;
 
-import com.gipsy.kings.tweet.model.Member;
+import com.gipsy.kings.tweet.model.Tweet;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -35,9 +35,9 @@ public class MemberRegistration {
     private EntityManager em;
 
     @Inject
-    private Event<Member> memberEventSrc;
+    private Event<Tweet> memberEventSrc;
 
-    public void register(Member member) throws Exception {
+    public void register(Tweet member) throws Exception {
         log.info("Registering " + member.getName());
         em.persist(member);
         memberEventSrc.fire(member);
