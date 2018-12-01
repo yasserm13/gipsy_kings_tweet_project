@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.gipsy.kings.tweet.controller;
+package src.main.java.com.gipsy.kings.tweet.controller;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
