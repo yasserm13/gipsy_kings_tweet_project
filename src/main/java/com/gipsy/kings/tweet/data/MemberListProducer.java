@@ -31,7 +31,7 @@ import com.gipsy.kings.tweet.model.Tweet;
 public class MemberListProducer {
 
     @Inject
-    private MemberRepository memberRepository;
+    private TweetRepository memberRepository;
 
     private List<Tweet> members;
 
@@ -43,12 +43,12 @@ public class MemberListProducer {
         return members;
     }
 
-    public void onMemberListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Tweet member) {
+    /*public void onMemberListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Tweet member) {
         retrieveAllMembersOrderedByName();
     }
 
     @PostConstruct
     public void retrieveAllMembersOrderedByName() {
-        members = memberRepository.findAllOrderedByName();
-    }
+        members = memberRepository.findAllOrderedById(1);
+    }*/
 }
