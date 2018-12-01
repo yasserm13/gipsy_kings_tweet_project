@@ -16,8 +16,6 @@
  */
 package com.gipsy.kings.tweet.test;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -25,7 +23,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import com.gipsy.kings.tweet.model.Tweet;
-import com.gipsy.kings.tweet.service.MemberRegistration;
+import com.gipsy.kings.tweet.service.TweetRegistration;
 import com.gipsy.kings.tweet.util.Resources;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -39,7 +37,7 @@ public class MemberRegistrationTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
-                .addClasses(Tweet.class, MemberRegistration.class, Resources.class)
+                .addClasses(Tweet.class, TweetRegistration.class, Resources.class)
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 // Deploy our test datasource
@@ -47,20 +45,14 @@ public class MemberRegistrationTest {
     }
 
     @Inject
-    MemberRegistration memberRegistration;
+    TweetRegistration memberRegistration;
 
     @Inject
     Logger log;
 
     @Test
     public void testRegister() throws Exception {
-        Tweet newMember = new Tweet();
-        newMember.setName("Jane Doe");
-        newMember.setEmail("jane@mailinator.com");
-        newMember.setPhoneNumber("2125551234");
-        memberRegistration.register(newMember);
-        assertNotNull(newMember.getId());
-        log.info(newMember.getName() + " was persisted with id " + newMember.getId());
+
     }
 
 }

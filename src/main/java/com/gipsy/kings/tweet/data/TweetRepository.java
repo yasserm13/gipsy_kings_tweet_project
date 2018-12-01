@@ -16,39 +16,21 @@
  */
 package com.gipsy.kings.tweet.data;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
-import javax.enterprise.inject.Produces;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
+import javax.persistence.EntityManager;
+
 
 import com.gipsy.kings.tweet.model.Tweet;
 
-@RequestScoped
-public class MemberListProducer {
+@ApplicationScoped
+public class TweetRepository {
 
     @Inject
-    private TweetRepository memberRepository;
+    private EntityManager em;
 
-    private List<Tweet> members;
-
-    // @Named provides access the return value via the EL variable name "members" in the UI (e.g.
-    // Facelets or JSP view)
-    @Produces
-    @Named
-    public List<Tweet> getMembers() {
-        return members;
+    public Tweet findById(Long id) {
+        return em.find(Tweet.class, id);
     }
 
-    /*public void onMemberListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Tweet member) {
-        retrieveAllMembersOrderedByName();
-    }
-
-    @PostConstruct
-    public void retrieveAllMembersOrderedByName() {
-        members = memberRepository.findAllOrderedById(1);
-    }*/
 }
