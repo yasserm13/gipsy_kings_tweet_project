@@ -42,13 +42,12 @@ public class TweetResourceRESTService {
 
     @Inject
     TweetRegistration registration;
-    
+    /*
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Tweet> listAllTweet() {
+    public List<Member> listAllMembers() {
         return repository.findAllOrderedByName();
-    }
-    
+    }*/
 
     @GET
     @Path("/{id:[0-9][0-9]*}")
