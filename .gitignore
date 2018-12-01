@@ -27,3 +27,5 @@ hs_err_pid*
 .classpath
 .settings/
 bin/
+Dockerfile
+deploy/
