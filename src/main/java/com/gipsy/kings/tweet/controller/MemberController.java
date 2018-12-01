@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.gipsy.kings.tweet.model.Member;
+import com.gipsy.kings.tweet.model.Tweet;
 import com.gipsy.kings.tweet.service.MemberRegistration;
 
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
@@ -42,11 +42,11 @@ public class MemberController {
 
     @Produces
     @Named
-    private Member newMember;
+    private Tweet newMember;
 
     @PostConstruct
     public void initNewMember() {
-        newMember = new Member();
+        newMember = new Tweet();
     }
 
     public void register() throws Exception {

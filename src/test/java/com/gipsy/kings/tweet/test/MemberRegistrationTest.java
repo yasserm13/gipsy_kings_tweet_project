@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import com.gipsy.kings.tweet.model.Member;
+import com.gipsy.kings.tweet.model.Tweet;
 import com.gipsy.kings.tweet.service.MemberRegistration;
 import com.gipsy.kings.tweet.util.Resources;
 import org.jboss.shrinkwrap.api.Archive;
@@ -39,7 +39,7 @@ public class MemberRegistrationTest {
     @Deployment
     public static Archive<?> createTestArchive() {
         return ShrinkWrap.create(WebArchive.class, "test.war")
-                .addClasses(Member.class, MemberRegistration.class, Resources.class)
+                .addClasses(Tweet.class, MemberRegistration.class, Resources.class)
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 // Deploy our test datasource
@@ -54,7 +54,7 @@ public class MemberRegistrationTest {
 
     @Test
     public void testRegister() throws Exception {
-        Member newMember = new Member();
+        Tweet newMember = new Tweet();
         newMember.setName("Jane Doe");
         newMember.setEmail("jane@mailinator.com");
         newMember.setPhoneNumber("2125551234");
