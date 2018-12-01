@@ -42,11 +42,11 @@ public class MemberController {
 
     @Produces
     @Named
-    private Tweet newMember;
+    private Member newMember;
 
     @PostConstruct
     public void initNewMember() {
-        newMember = new Tweet();
+        newMember = new Member();
     }
 
     public void register() throws Exception {

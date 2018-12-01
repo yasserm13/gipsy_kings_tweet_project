@@ -16,6 +16,7 @@
  */
 package com.gipsy.kings.tweet.rest;
 
+import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -89,7 +90,7 @@ public class MemberResourceRESTService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createMember(Tweet member) {
+    public Response createMember(Member member) {
 
         Response.ResponseBuilder builder = null;
 
@@ -133,9 +134,9 @@ public class MemberResourceRESTService {
      * @throws ConstraintViolationException If Bean Validation errors exist
      * @throws ValidationException If member with the same email already exists
      */
-    private void validateMember(Tweet member) throws ConstraintViolationException, ValidationException {
+    private void validateMember(Member member) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
-        Set<ConstraintViolation<Tweet>> violations = validator.validate(member);
+        Set<ConstraintViolation<Member>> violations = validator.validate(member);
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
@@ -174,9 +175,9 @@ public class MemberResourceRESTService {
      * @return True if the email already exists, and false otherwise
      */
     public boolean emailAlreadyExists(String email) {
-        Tweet member = null;
+        Member member = null;
         try {
-            member = repository.findByEmail(email);
+        	member = repository.findByEmail(email);
         } catch (NoResultException e) {
             // ignore
         }

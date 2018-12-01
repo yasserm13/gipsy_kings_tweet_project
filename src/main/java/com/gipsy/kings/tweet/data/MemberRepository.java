@@ -36,7 +36,7 @@ public class MemberRepository {
         return em.find(Tweet.class, id);
     }
 
-    public Tweet findByEmail(String email) {
+    public Member findByEmail(String email) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tweet> criteria = cb.createQuery(Tweet.class);
         Root<Tweet> member = criteria.from(Tweet.class);

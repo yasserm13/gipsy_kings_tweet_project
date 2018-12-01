@@ -22,6 +22,8 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+
+import java.lang.reflect.Member;
 import java.util.logging.Logger;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
@@ -35,9 +37,9 @@ public class MemberRegistration {
     private EntityManager em;
 
     @Inject
-    private Event<Tweet> memberEventSrc;
+    private Event<Member> memberEventSrc;
 
-    public void register(Tweet member) throws Exception {
+    public void register(Member member) throws Exception {
         log.info("Registering " + member.getName());
         em.persist(member);
         memberEventSrc.fire(member);

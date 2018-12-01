@@ -24,9 +24,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.gipsy.kings.tweet.data.MemberRepository;
+import com.gipsy.kings.tweet.data.TweetRepository;
 import com.gipsy.kings.tweet.model.Tweet;
-import com.gipsy.kings.tweet.service.MemberRegistration;
+import com.gipsy.kings.tweet.service.TweetRegistration;
 
 @Path("/tweet")
 @RequestScoped
@@ -41,13 +41,14 @@ public class TweetResourceRESTService {
     private TweetRepository repository;
 
     @Inject
-    MemberRegistration registration;
-    /*
+    TweetRegistration registration;
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Member> listAllMembers() {
+    public List<Tweet> listAllTweet() {
         return repository.findAllOrderedByName();
-    }*/
+    }
+    
 
     @GET
     @Path("/{id:[0-9][0-9]*}")
@@ -61,7 +62,7 @@ public class TweetResourceRESTService {
     }
 
     /**
-     * Creates a new member from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
+     * Creates a new tweet from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
      * or with a map of fields, and related errors.
      */
     @POST
@@ -72,8 +73,8 @@ public class TweetResourceRESTService {
         Response.ResponseBuilder builder = null;
 
         try {
-            // Validates member using bean validation
-            validateMember(tweet);
+            // Validates tweet using bean validation
+            validateTweet(tweet);
 
             registration.register(tweet);
 
@@ -99,19 +100,19 @@ public class TweetResourceRESTService {
 
     /**
      * <p>
-     * Validates the given Member variable and throws validation exceptions based on the type of error. If the error is standard
+     * Validates the given tweet variable and throws validation exceptions based on the type of error. If the error is standard
      * bean validation errors then it will throw a ConstraintValidationException with the set of the constraints violated.
      * </p>
      * <p>
-     * If the error is caused because an existing member with the same email is registered it throws a regular validation
+     * If the error is caused because an existing tweet with the same email is registered it throws a regular validation
      * exception so that it can be interpreted separately.
      * </p>
      * 
-     * @param member Member to be validated
+     * @param tweet tweet to be validated
      * @throws ConstraintViolationException If Bean Validation errors exist
-     * @throws ValidationException If member with the same email already exists
+     * @throws ValidationException If tweet with the same email already exists
      */
-    private void validateMember(Tweet tweet) throws ConstraintViolationException, ValidationException {
+    private void validateTweet(Tweet tweet) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
         Set<ConstraintViolation<Tweet>> violations = validator.validate(tweet);
 
@@ -145,8 +146,8 @@ public class TweetResourceRESTService {
     }
 
     /**
-     * Checks if a member with the same email address is already registered. This is the only way to easily capture the
-     * "@UniqueConstraint(columnNames = "email")" constraint from the Member class.
+     * Checks if a tweet with the same email address is already registered. This is the only way to easily capture the
+     * "@UniqueConstraint(columnNames = "email")" constraint from the tweet class.
      * 
      * @param email The email to check
      * @return True if the email already exists, and false otherwise
