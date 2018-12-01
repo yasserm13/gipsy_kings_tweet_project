@@ -14,23 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.gipsy.kings.tweet.data;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
+package com.gipsy.kings.tweet.service;
 
 import com.gipsy.kings.tweet.model.Tweet;
 
-@ApplicationScoped
-public class TweetRepository {
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.logging.Logger;
+
+// The @Stateless annotation eliminates the need for manual transaction demarcation
+@Stateless
+public class TweetRegistration {
+
+    @Inject
+    private Logger log;
 
     @Inject
     private EntityManager em;
 
-    public Tweet findById(Long id) {
-        return em.find(Tweet.class, id);
-    }
+    @Inject
+    private Event<Tweet> twitterEventSrc;
 
+    public void register(Tweet tweet) throws Exception {
+        log.info("senderID: " + tweet.getSenderId() + "tweetID: " + tweet.getTweetId() + "Text: " + tweet.getText() +  "Date: " + tweet.getDate());
+        em.persist(tweet);
+        twitterEventSrc.fire(tweet);
+    }
 }
