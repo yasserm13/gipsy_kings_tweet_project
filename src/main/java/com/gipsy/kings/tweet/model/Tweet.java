@@ -38,7 +38,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @SuppressWarnings("serial")
 @Entity
 @XmlRootElement
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"tweetId","senderId","text","date","urlMedia"}))
 public class Tweet implements Serializable {
 
     @Id
