@@ -41,8 +41,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.gipsy.kings.tweet.data.MemberRepository;
-import com.gipsy.kings.tweet.model.Member;
-import com.gipsy.kings.tweet.service.MemberRegistration;
+import com.gipsy.kings.tweet.model.Tweet;
+import com.gipsy.kings.tweet.service.TweetRegistration;
 
 /**
  * JAX-RS Example
@@ -63,19 +63,19 @@ public class MemberResourceRESTService {
     private MemberRepository repository;
 
     @Inject
-    MemberRegistration registration;
+    TweetRegistration registration;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Member> listAllMembers() {
+    public List<Tweet> listAllMembers() {
         return repository.findAllOrderedByName();
     }
 
     @GET
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Member lookupMemberById(@PathParam("id") long id) {
-        Member member = repository.findById(id);
+    public Tweet lookupMemberById(@PathParam("id") long id) {
+        Tweet member = repository.findById(id);
         if (member == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -89,7 +89,7 @@ public class MemberResourceRESTService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createMember(Member member) {
+    public Response createMember(Tweet member) {
 
         Response.ResponseBuilder builder = null;
 
@@ -133,9 +133,9 @@ public class MemberResourceRESTService {
      * @throws ConstraintViolationException If Bean Validation errors exist
      * @throws ValidationException If member with the same email already exists
      */
-    private void validateMember(Member member) throws ConstraintViolationException, ValidationException {
+    private void validateMember(Tweet member) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
-        Set<ConstraintViolation<Member>> violations = validator.validate(member);
+        Set<ConstraintViolation<Tweet>> violations = validator.validate(member);
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
@@ -174,7 +174,7 @@ public class MemberResourceRESTService {
      * @return True if the email already exists, and false otherwise
      */
     public boolean emailAlreadyExists(String email) {
-        Member member = null;
+        Tweet member = null;
         try {
             member = repository.findByEmail(email);
         } catch (NoResultException e) {

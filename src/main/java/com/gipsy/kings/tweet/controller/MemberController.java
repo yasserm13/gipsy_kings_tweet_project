@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package src.main.java.com.gipsy.kings.tweet.controller;
+package com.gipsy.kings.tweet.controller;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
@@ -24,8 +24,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.gipsy.kings.tweet.model.Member;
-import com.gipsy.kings.tweet.service.MemberRegistration;
+import com.gipsy.kings.tweet.model.Tweet;
+import com.gipsy.kings.tweet.service.TweetRegistration;
 
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
 // EL name
@@ -38,15 +38,15 @@ public class MemberController {
     private FacesContext facesContext;
 
     @Inject
-    private MemberRegistration memberRegistration;
+    private TweetRegistration memberRegistration;
 
     @Produces
     @Named
-    private Member newMember;
+    private Tweet newMember;
 
     @PostConstruct
     public void initNewMember() {
-        newMember = new Member();
+        newMember = new Tweet();
     }
 
     public void register() throws Exception {
