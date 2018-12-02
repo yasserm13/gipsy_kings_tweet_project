@@ -38,7 +38,7 @@ public class TweetRegistration {
     private Event<Tweet> twitterEventSrc;
 
     public void register(Tweet tweet) throws Exception {
-        log.info("senderID: " + tweet.getSenderId() + "tweetID: " + tweet.getTweetId() + "Text: " + tweet.getText() +  "Date: " + tweet.getDate());
+        log.info("senderID: " + tweet.getSenderId() + " tweetID: " + tweet.getTweetId() + " Text: " + tweet.getText() +  " Date: " + tweet.getDate());
         em.persist(tweet);
         twitterEventSrc.fire(tweet);
     }

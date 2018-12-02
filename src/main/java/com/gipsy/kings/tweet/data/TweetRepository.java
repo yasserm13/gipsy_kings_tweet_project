@@ -29,8 +29,9 @@ public class TweetRepository {
     @Inject
     private EntityManager em;
 
-    public Tweet findById(Long id) {
-        return em.find(Tweet.class, id);
+    public Tweet findById(Long tweetId) {
+    	System.out.println("recherche tweet : "+tweetId);
+        return em.find(Tweet.class, tweetId);
     }
 
 }

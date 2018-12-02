@@ -24,12 +24,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.gipsy.kings.tweet.data.MemberRepository;
-import com.gipsy.kings.tweet.model.Member;
+import com.gipsy.kings.tweet.data.TweetRepository;
 import com.gipsy.kings.tweet.model.Tweet;
-import com.gipsy.kings.tweet.service.MemberRegistration;
+import com.gipsy.kings.tweet.service.TweetRegistration;
 
-@Path("/tweet")
+@Path("/")
 @RequestScoped
 public class TweetResourceRESTService {
 	 @Inject
@@ -39,22 +38,18 @@ public class TweetResourceRESTService {
     private Validator validator;
 
     @Inject
-    private MemberRepository repository;
+    private TweetRepository repository;
 
     @Inject
-    MemberRegistration registration;
-    /*
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Member> listAllMembers() {
-        return repository.findAllOrderedByName();
-    }*/
+    TweetRegistration registration;
 
     @GET
-    @Path("/{id:[0-9][0-9]*}")
+    @Path("/tweet/{tweetId:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Tweet lookupMemberById(@PathParam("id") long id) {
-    	Tweet tweet = repository.findById(id);
+    //pour essai
+    //curl -i    --request GET    http://localhost:8080/gipsy-kings-tweet/tweet/1
+    public Tweet lookupTweetById(@PathParam("tweetId") long tweetId) {
+    	Tweet tweet = repository.findById(tweetId);
         if (tweet == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -66,17 +61,20 @@ public class TweetResourceRESTService {
      * or with a map of fields, and related errors.
      */
     @POST
+    @Path("/tweet")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createTweet(Member member) {
-
+    //pour essai
+    // curl -i  --header "Content-Type: application/json"   --request POST   --data '{"senderId":"1234","text":"test text","urlMedia":"test urlMedia"}' http://localhost:8080/gipsy-kings-tweet/tweet
+    public Response createTweet(Tweet tweet) {
+    	System.out.println("tweet post");
         Response.ResponseBuilder builder = null;
 
         try {
             // Validates member using bean validation
-            validateMember(member);
+            validateMember(tweet);
 
-            registration.register(member);
+            registration.register(tweet);
 
             // Create an "ok" response
             builder = Response.ok();
@@ -112,18 +110,14 @@ public class TweetResourceRESTService {
      * @throws ConstraintViolationException If Bean Validation errors exist
      * @throws ValidationException If member with the same email already exists
      */
-    private void validateMember(Member member) throws ConstraintViolationException, ValidationException {
+    private void validateMember(Tweet tweet) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
-        Set<ConstraintViolation<Member>> violations = validator.validate(member);
+        Set<ConstraintViolation<Tweet>> violations = validator.validate(tweet);
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
         }
 
-        // Check the uniqueness of the email address
-        if (emailAlreadyExists(member.getEmail())) {
-            throw new ValidationException("Unique Email Violation");
-        }
     }
 
     /**
@@ -145,21 +139,5 @@ public class TweetResourceRESTService {
         return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
     }
 
-    /**
-     * Checks if a member with the same email address is already registered. This is the only way to easily capture the
-     * "@UniqueConstraint(columnNames = "email")" constraint from the Member class.
-     * 
-     * @param email The email to check
-     * @return True if the email already exists, and false otherwise
-     */
-    public boolean emailAlreadyExists(String email) {
-        Member member = null;
-        try {
-            member = repository.findByEmail(email);
-        } catch (NoResultException e) {
-            // ignore
-        }
-        return member != null;
-    }
 
 }
