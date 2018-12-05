@@ -1,0 +1,38 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: chico
+    volumes:
+      - "./docker/data:/var/lib/postgresql/data"
+    container_name: gipsy-postgres
+  adminer:
+    image: adminer
+    ports:
+      - "8686:8080"
+    links:
+      - postgres
+    container_name: gipsy-adminer
+  apache:
+    image: httpd:alpine
+    ports:
+      - "8888:80"
+    volumes:
+      - "./docker/images:/usr/local/apache2/htdocs/"
+    container_name: gipsy-apache
+  wildfly:
+    build: 
+      context: ./
+      dockerfile: .docker/Dockerfile-Wildfly
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+      - "8787:8787"
+    volumes:
+      - "./docker/deploy/:/opt/jboss/wildfly/standalone/deployments/"
+      - "./docker/images:/opt/jboss/images"
+    links:
+      - postgres
+    container_name: gipsy-wildfly
+

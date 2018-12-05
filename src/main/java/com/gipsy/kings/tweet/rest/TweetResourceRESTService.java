@@ -28,7 +28,7 @@ import com.gipsy.kings.tweet.data.TweetRepository;
 import com.gipsy.kings.tweet.model.Tweet;
 import com.gipsy.kings.tweet.service.TweetRegistration;
 
-@Path("/tweet")
+@Path("/")
 @RequestScoped
 public class TweetResourceRESTService {
 	 @Inject
@@ -42,18 +42,14 @@ public class TweetResourceRESTService {
 
     @Inject
     TweetRegistration registration;
-    /*
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Member> listAllMembers() {
-        return repository.findAllOrderedByName();
-    }*/
 
     @GET
-    @Path("/{id:[0-9][0-9]*}")
+    @Path("/tweet/{tweetId:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Tweet lookupTweetById(@PathParam("id") long id) {
-    	Tweet tweet = repository.findById(id);
+    //pour essai
+    //curl -i    --request GET    http://localhost:8080/gipsy-kings-tweet/tweet/1
+    public Tweet lookupTweetById(@PathParam("tweetId") long tweetId) {
+    	Tweet tweet = repository.findById(tweetId);
         if (tweet == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -61,19 +57,22 @@ public class TweetResourceRESTService {
     }
 
     /**
-     * Creates a new tweet from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
+     * Creates a new member from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
      * or with a map of fields, and related errors.
      */
     @POST
+    @Path("/tweet")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    //pour essai
+    // curl -i  --header "Content-Type: application/json"   --request POST   --data '{"senderId":"1234","text":"test text","urlMedia":"test urlMedia"}' http://localhost:8080/gipsy-kings-tweet/tweet
     public Response createTweet(Tweet tweet) {
-
+    	System.out.println("tweet post");
         Response.ResponseBuilder builder = null;
 
         try {
-            // Validates tweet using bean validation
-            validateTweet(tweet);
+            // Validates member using bean validation
+            validateMember(tweet);
 
             registration.register(tweet);
 
@@ -99,19 +98,19 @@ public class TweetResourceRESTService {
 
     /**
      * <p>
-     * Validates the given tweet variable and throws validation exceptions based on the type of error. If the error is standard
+     * Validates the given Member variable and throws validation exceptions based on the type of error. If the error is standard
      * bean validation errors then it will throw a ConstraintValidationException with the set of the constraints violated.
      * </p>
      * <p>
-     * If the error is caused because an existing tweet with the same email is registered it throws a regular validation
+     * If the error is caused because an existing member with the same email is registered it throws a regular validation
      * exception so that it can be interpreted separately.
      * </p>
      * 
-     * @param tweet tweet to be validated
+     * @param member Member to be validated
      * @throws ConstraintViolationException If Bean Validation errors exist
-     * @throws ValidationException If tweet with the same email already exists
+     * @throws ValidationException If member with the same email already exists
      */
-    private void validateTweet(Tweet tweet) throws ConstraintViolationException, ValidationException {
+    private void validateMember(Tweet tweet) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
         Set<ConstraintViolation<Tweet>> violations = validator.validate(tweet);
 
@@ -119,10 +118,6 @@ public class TweetResourceRESTService {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
         }
 
-        // Check the uniqueness of the email address
-        if (tweetlAlreadyExists(tweet.getTweetId())) {
-            throw new ValidationException("Unique Email Violation");
-        }
     }
 
     /**
@@ -144,21 +139,6 @@ public class TweetResourceRESTService {
         return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
     }
 
-    /**
-     * Checks if a tweet with the same email address is already registered. This is the only way to easily capture the
-     * "@UniqueConstraint(columnNames = "email")" constraint from the tweet class.
-     * 
-     * @param email The email to check
-     * @return True if the email already exists, and false otherwise
-     */
-    public boolean tweetlAlreadyExists(String tweetId) {
-        Tweet tweet = null;
-        try {
-        	tweet = repository.findById(tweetId);
-        } catch (NoResultException e) {
-            // ignore
-        }
-        return tweet != null;
-    }
 
 }
+
