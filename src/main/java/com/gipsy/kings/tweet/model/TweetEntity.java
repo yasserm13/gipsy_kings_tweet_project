@@ -7,9 +7,11 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
 public class TweetEntity {
  
     public TweetEntity() {
+    	
     }
  
     private byte[] data;
+    private long senderId;
  
     public byte[] getData() {
         return data;
@@ -19,5 +21,15 @@ public class TweetEntity {
     @PartType("application/octet-stream")
     public void setData(byte[] data) {
         this.data = data;
+    }
+    
+    public long getSenderId() {
+        return senderId;
+    }
+ 
+    @FormParam("senderId")
+    @PartType("application/octet-stream")
+    public void setSenderId(long senderId) {
+        this.senderId = senderId;
     }
 }

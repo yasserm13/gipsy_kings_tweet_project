@@ -18,11 +18,11 @@ public class ImageRegistration {
 	public long register(long senderID,byte[] data) throws IOException {
 		
 		long timestmp = Instant.now().toEpochMilli();
-		
+		System.out.println("In register function");
 		// convert byte array back to BufferedImage
 		InputStream in = new ByteArrayInputStream(data);
 		BufferedImage nvImage = ImageIO.read(in);
-		
+		System.out.println("Image Height : "+nvImage.getHeight());
 		if ((nvImage.getHeight() > 500) || (nvImage.getWidth() > 500 ))
 			nvImage = (BufferedImage) nvImage.getScaledInstance(500, 500, java.awt.Image.SCALE_DEFAULT);
 		

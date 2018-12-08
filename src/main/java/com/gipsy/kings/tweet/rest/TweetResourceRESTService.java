@@ -1,5 +1,6 @@
 package com.gipsy.kings.tweet.rest;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.gipsy.kings.tweet.data.TweetRepository;
 import com.gipsy.kings.tweet.model.TweetEntity;
 import com.gipsy.kings.tweet.model.Tweet;
 import com.gipsy.kings.tweet.service.TweetRegistration;
+import com.gipsy.kings.tweet.service.ImageRegistration;
 
 
 @Path("/")
@@ -148,48 +150,34 @@ public class TweetResourceRESTService {
     }
    
     // To Handle the uploaded image
-    // Pour tester : curl -F filedata=@yourfile.png http://localhost:8080/gipsy-kings-tweet/tweet/uploadimage
+    // Pour tester : curl -F uploadedFile=@yourfile.png -F senderId=@SenderId http://localhost:8080/gipsy-kings-tweet/tweet/uploadimage
     @POST
     @Path("/tweet/uploadimage")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response uploadBinary(@MultipartForm TweetEntity tweetEntity) {     
-    	JsonObject  jsonFile = Json.createObjectBuilder()
-                .add("length", tweetEntity.getData().length)
-                .add("file", tweetEntity.getData().toString())
-                .build();        return 
-       Response.ok(jsonFile).build();
-    }
-    
-    // Saving the uploaded image 
-    public Response saveTweetImage(Tweet tweet) {
-    	log.fine("saveTweetImage building the responses");
-        Response.ResponseBuilder builder = null;
-
-        try {
-        	
-            //imageRegistration.register(long senderId, byte[] dataContent);
+    public Response uploadBinary(@MultipartForm TweetEntity tweetEntity) { 
+    	
+    	Response.ResponseBuilder builder = null;
+    	ImageRegistration iReg = new ImageRegistration();
+    	Long tmpstp;
+    	
+    	try {
+    		System.out.println("Before register function");
+    		tmpstp = iReg.register(tweetEntity.getSenderId(), tweetEntity.getData());
+			
+			Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("senderID",""+tweetEntity.getSenderId());
+            responseObj.put("urlMedia",""+tmpstp);
+            builder = Response.status(Response.Status.OK).entity(responseObj);
             
-            // Create an "ok" response
-            builder = Response.ok();
             
-        } catch (ConstraintViolationException ce) {
-            // Handle bean validation issues
-            builder = createViolationResponse(ce.getConstraintViolations());
-        } catch (Exception e) {
-            // Handle generic exceptions
-            Map<String, String> responseObj = new HashMap<String, String>();
+		} catch (IOException e) {
+			Map<String, String> responseObj = new HashMap<String, String>();
             responseObj.put("error", e.getMessage());
             builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
-        }catch (IOException e) {
-            // Handle generic exceptions
-            Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
-        }
-
-        return builder.build();
+		}
+    	
+    	return builder.build();
     }
-    
-
+   
 }
