@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -24,9 +26,13 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
 import com.gipsy.kings.tweet.data.TweetRepository;
+import com.gipsy.kings.tweet.model.TweetEntity;
 import com.gipsy.kings.tweet.model.Tweet;
 import com.gipsy.kings.tweet.service.TweetRegistration;
+
 
 @Path("/")
 @RequestScoped
@@ -138,7 +144,50 @@ public class TweetResourceRESTService {
 
         return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
     }
+   
+    // To Handle the uploaded image
+    // Pour tester : curl -F filedata=@yourfile.png http://localhost:8080/gipsy-kings-tweet/tweet/uploadimage
+    @POST
+    @Path("/tweet/uploadimage")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadBinary(@MultipartForm TweetEntity tweetEntity) {     
+    	JsonObject  jsonFile = Json.createObjectBuilder()
+                .add("length", tweetEntity.getData().length)
+                .add("file", tweetEntity.getData().toString())
+                .build();        return 
+       Response.ok(jsonFile).build();
+    }
+    
+    // Saving the uploaded image 
+    public Response saveTweetImage(Tweet tweet) {
+    	log.fine("saveTweetImage building the responses");
+        Response.ResponseBuilder builder = null;
 
+        try {
+        	
+            //imageRegistration.register(long senderId, byte[] dataContent);
+            
+            // Create an "ok" response
+            builder = Response.ok();
+            
+        } catch (ConstraintViolationException ce) {
+            // Handle bean validation issues
+            builder = createViolationResponse(ce.getConstraintViolations());
+        } catch (Exception e) {
+            // Handle generic exceptions
+            Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
+        }catch (IOException e) {
+            // Handle generic exceptions
+            Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
+        }
+
+        return builder.build();
+    }
+    
 
 }
-
