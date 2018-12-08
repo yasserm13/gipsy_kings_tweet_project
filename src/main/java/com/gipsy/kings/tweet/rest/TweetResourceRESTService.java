@@ -86,12 +86,12 @@ public class TweetResourceRESTService {
             // Handle the unique constrain violation tweetid existe deja => ne devrait jamais arrivé
             Map<String, String> responseObj = new HashMap<String, String>();
             responseObj.put("tweetid", "tweetid existe déjà");
-            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
+            builder = Response.status(Response.Status. BAD_REQUEST).entity(responseObj);
         } catch (Exception e) {
             // Handle generic exceptions = 
             Map<String, String> responseObj = new HashMap<String, String>();
             responseObj.put("erreur", e.getMessage());
-            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
+            builder = Response.status(Response.Status. BAD_REQUEST).entity(responseObj);
         }
 
         return builder.build();
