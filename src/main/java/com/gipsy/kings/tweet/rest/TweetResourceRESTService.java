@@ -1,10 +1,7 @@
 package com.gipsy.kings.tweet.rest;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -12,7 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.persistence.NoResultException;
+import javax.json.JsonObjectBuilder;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
@@ -92,14 +89,16 @@ public class TweetResourceRESTService {
             builder = createViolationResponse(ce.getConstraintViolations());
         } catch (ValidationException e) {
             // Handle the unique constrain violation tweetid existe deja => ne devrait jamais arrivé
-            Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("tweetid", "tweetid existe déjà");
-            builder = Response.status(Response.Status. BAD_REQUEST).entity(responseObj);
+            JsonObject jsonFile = Json.createObjectBuilder()
+                    .add("erreur", "tweetid existe déjà")
+                    .build();
+            builder = Response.status(Response.Status. BAD_REQUEST).entity(jsonFile);
         } catch (Exception e) {
             // Handle generic exceptions = 
-            Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("erreur", e.getMessage());
-            builder = Response.status(Response.Status. BAD_REQUEST).entity(responseObj);
+            JsonObject jsonFile = Json.createObjectBuilder()
+                    .add("erreur", e.getMessage())
+                    .build();
+            builder = Response.status(Response.Status. BAD_REQUEST).entity(jsonFile);
         }
 
         return builder.build();
@@ -130,23 +129,23 @@ public class TweetResourceRESTService {
     }
 
     /**
-     * Creates a JAX-RS "Bad Request" response including a map of all violation fields, and their message. This can then be used
+     * Cree une response incluant un json of all violation fields, and their message. This can then be used
      * by clients to show violations.
      * Renvoie une erreur 406 avec les violations
      * 
      * @param violations A set of violations that needs to be reported
-     * @return JAX-RS response containing all violations
+     * @return JAX-RS response containing a json of all violations
      */
     private Response.ResponseBuilder createViolationResponse(Set<ConstraintViolation<?>> violations) {
         log.fine("Validation completed. violations found: " + violations.size());
 
-        Map<String, String> responseObj = new HashMap<String, String>();
+        JsonObjectBuilder jsonBuild= Json.createObjectBuilder();
 
         for (ConstraintViolation<?> violation : violations) {
-            responseObj.put(violation.getPropertyPath().toString(), violation.getMessage());
+        	jsonBuild.add(violation.getPropertyPath().toString(), violation.getMessage());
         }
 
-        return Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
+        return Response.status(Response.Status.NOT_ACCEPTABLE).entity(jsonBuild.build());
     }
    
     // To Handle the uploaded image
@@ -164,17 +163,17 @@ public class TweetResourceRESTService {
     	try {
     		System.out.println("Before register function");
     		tmpstp = iReg.register(tweetEntity.getSenderId(), tweetEntity.getData());
-			
-			Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("senderID",""+tweetEntity.getSenderId());
-            responseObj.put("urlMedia",""+tmpstp);
-            builder = Response.status(Response.Status.OK).entity(responseObj);
-            
-            
+
+    		JsonObject jsonFile = Json.createObjectBuilder()
+                    .add("senderID", tweetEntity.getSenderId())
+                    .add("urlMedia", tmpstp)
+                    .build();
+    		builder = Response.ok(jsonFile);
 		} catch (IOException e) {
-			Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(responseObj);
+            JsonObject jsonFile = Json.createObjectBuilder()
+                    .add("error", e.getMessage())
+                    .build();
+            builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(jsonFile);
 		}
     	
     	return builder.build();
