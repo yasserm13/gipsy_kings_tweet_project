@@ -21,6 +21,16 @@ services:
     volumes:
       - "./docker/images:/usr/local/apache2/htdocs/"
     container_name: gipsy-apache
+  keycloak:
+    image: jboss/keycloak:4.6.0.Final
+    ports:
+      - 8099:8080
+    volumes:
+      - "./docker/keycloackdata/:/opt/jboss/keycloak/standalone/data"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    container_name: gipsy-keycloack
   wildfly:
     build: 
       context: ./
@@ -34,5 +44,4 @@ services:
       - "./docker/images:/opt/jboss/images"
     links:
       - postgres
-    container_name: gipsy-wildfly
-
+      - keycloak
