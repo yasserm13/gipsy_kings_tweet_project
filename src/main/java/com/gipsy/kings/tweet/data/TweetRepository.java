@@ -19,7 +19,7 @@ package com.gipsy.kings.tweet.data;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-
+import javax.persistence.PersistenceContext;
 
 import com.gipsy.kings.tweet.model.Tweet;
 
@@ -27,10 +27,12 @@ import com.gipsy.kings.tweet.model.Tweet;
 public class TweetRepository {
 
     @Inject
+    @PersistenceContext(name="mysql")
     private EntityManager em;
 
-    public Tweet findById(Long id) {
-        return em.find(Tweet.class, id);
+    public Tweet findById(Long tweetId) {
+    	System.out.println("recherche tweet : "+tweetId);
+        return em.find(Tweet.class, tweetId);
     }
 
 }

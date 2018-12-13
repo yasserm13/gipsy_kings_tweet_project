@@ -11,7 +11,6 @@ import javax.inject.Named;
 import com.gipsy.kings.tweet.model.Tweet;
 import com.gipsy.kings.tweet.service.TweetRegistration;
 
-
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
 // EL name
 // Read more about the @Model stereotype in this FAQ:
