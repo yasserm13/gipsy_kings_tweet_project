@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class ImageRegistration {
 	public final String PATH = "/opt/jboss/images";
 	
 	
-	public long register(long senderID,byte[] data) throws IOException {
+	public long register(long senderID,byte[] data) throws IOException, ParseException {
 		
 		Image nv ;
 		
@@ -33,6 +34,8 @@ public class ImageRegistration {
 		// convert byte array back to BufferedImage
 		InputStream in = new ByteArrayInputStream(data);
 		BufferedImage nvImage = ImageIO.read(in);
+		if (nvImage == null)
+			throw new ParseException(" Error reading image", 0);
 		System.out.println("Image Height : "+nvImage.getHeight());
 		if ((nvImage.getHeight() > 500) || (nvImage.getWidth() > 500 )) {
 			nv = nvImage.getScaledInstance(500, 500, java.awt.Image.SCALE_DEFAULT);

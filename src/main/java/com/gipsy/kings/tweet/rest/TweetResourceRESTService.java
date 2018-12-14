@@ -1,6 +1,7 @@
 package com.gipsy.kings.tweet.rest;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -92,13 +93,13 @@ public class TweetResourceRESTService {
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("erreur", "tweetid existe déjà")
                     .build();
-            builder = Response.status(Response.Status. BAD_REQUEST).entity(jsonFile);
+            builder = Response.status(Response.Status. NOT_ACCEPTABLE).entity(jsonFile);
         } catch (Exception e) {
             // Handle generic exceptions = 
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("erreur", e.getMessage())
                     .build();
-            builder = Response.status(Response.Status. BAD_REQUEST).entity(jsonFile);
+            builder = Response.status(Response.Status. NOT_ACCEPTABLE).entity(jsonFile);
         }
 
         return builder.build();
@@ -169,12 +170,12 @@ public class TweetResourceRESTService {
                     .add("urlMedia", tmpstp)
                     .build();
     		builder = Response.ok(jsonFile);
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("error", e.getMessage())
                     .build();
             builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(jsonFile);
-		}
+		} 
     	
     	return builder.build();
     }
