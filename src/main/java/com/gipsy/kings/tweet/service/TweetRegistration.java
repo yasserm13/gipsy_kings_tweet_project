@@ -22,6 +22,8 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import java.util.logging.Logger;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
@@ -32,6 +34,7 @@ public class TweetRegistration {
     private Logger log;
 
     @Inject
+    @PersistenceContext(name="mysql")
     private EntityManager em;
 
     @Inject

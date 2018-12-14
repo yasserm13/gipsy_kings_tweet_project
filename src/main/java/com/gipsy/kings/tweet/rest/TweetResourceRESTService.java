@@ -150,6 +150,7 @@ public class TweetResourceRESTService {
    
     // To Handle the uploaded image
     //curl -i --request POST -F uploadedFile=@yourfile.png -F senderId=SenderId http://localhost:8080/gipsy-kings-tweet/tweet/uploadimage
+
     @POST
     @Path("/tweet/uploadimage")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
