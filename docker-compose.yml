@@ -1,18 +1,16 @@
 version: '2.0'
 services:
-  postgres:
-    image: postgres:alpine
+  MySqlDS:
+    image: mysql:5.7
     environment:
-      POSTGRES_PASSWORD: chico
-    volumes:
-      - "./docker/postgres-data-dir:/var/lib/postgresql/data"
-    container_name: gipsy-postgres
+      MYSQL_ROOT_PASSWORD: root
+    container_name: MySqlDS
   adminer:
     image: adminer
     ports:
       - "8686:8080"
     links:
-      - postgres
+      - MySqlDS
     container_name: gipsy-adminer
   apache:
     image: httpd:alpine
@@ -21,27 +19,16 @@ services:
     volumes:
       - "./docker/images:/usr/local/apache2/htdocs/"
     container_name: gipsy-apache
-  keycloak:
-    image: jboss/keycloak:4.6.0.Final
-    ports:
-      - 8099:8080
-    volumes:
-      - "./docker/keycloackdata/:/opt/jboss/keycloak/standalone/data"
-    environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-    container_name: gipsy-keycloack
   wildfly:
     build: 
       context: ./
-      dockerfile: ./docker/Dockerfile-Wildfly
+      dockerfile: ./docker/Dockerfile
     ports:
       - "8080:8080"
       - "9990:9990"
       - "8787:8787"
     volumes:
-      - "./docker/deploy/:/opt/jboss/wildfly/standalone/deployments/"
       - "./docker/images:/opt/jboss/images"
     links:
-      - postgres
-      - keycloak
+      - MySqlDS
+
