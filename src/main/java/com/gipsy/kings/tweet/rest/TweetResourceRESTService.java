@@ -3,6 +3,7 @@ package com.gipsy.kings.tweet.rest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -61,6 +62,13 @@ public class TweetResourceRESTService {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         return tweet;
+    }
+    
+    @GET
+    @Path("/tweet/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Tweet> listAllTweet() {
+        return repository.findAllTweetOrderedByTweetId();
     }
 
     /**
