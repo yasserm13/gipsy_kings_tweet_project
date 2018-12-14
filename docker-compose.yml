@@ -1,0 +1,34 @@
+version: '2.0'
+services:
+  MySqlDS:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    container_name: MySqlDS
+  adminer:
+    image: adminer
+    ports:
+      - "8686:8080"
+    links:
+      - MySqlDS
+    container_name: gipsy-adminer
+  apache:
+    image: httpd:alpine
+    ports:
+      - "8888:80"
+    volumes:
+      - "./docker/images:/usr/local/apache2/htdocs/"
+    container_name: gipsy-apache
+  wildfly:
+    build: 
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+      - "8787:8787"
+    volumes:
+      - "./docker/images:/opt/jboss/images"
+    links:
+      - MySqlDS
+

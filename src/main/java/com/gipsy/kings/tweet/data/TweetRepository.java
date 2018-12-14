@@ -16,45 +16,36 @@
  */
 package com.gipsy.kings.tweet.data;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.List;
 
 import com.gipsy.kings.tweet.model.Tweet;
 
 @ApplicationScoped
-public class MemberRepository {
+public class TweetRepository {
 
     @Inject
+    @PersistenceContext(name="mysql")
     private EntityManager em;
 
-    public Tweet findById(Long id) {
-        return em.find(Tweet.class, id);
+    public Tweet findById(Long tweetId) {
+    	System.out.println("recherche tweet : "+tweetId);
+        return em.find(Tweet.class, tweetId);
     }
-
-    public Tweet findByEmail(String email) {
+    
+    public List<Tweet> findAllTweetOrderedByTweetId() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tweet> criteria = cb.createQuery(Tweet.class);
-        Root<Tweet> member = criteria.from(Tweet.class);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-        // criteria.select(member).where(cb.equal(member.get(Member_.name), email));
-        criteria.select(member).where(cb.equal(member.get("email"), email));
-        return em.createQuery(criteria).getSingleResult();
-    }
-
-    public List<Tweet> findAllOrderedByName() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Tweet> criteria = cb.createQuery(Tweet.class);
-        Root<Tweet> member = criteria.from(Tweet.class);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-        // criteria.select(member).orderBy(cb.asc(member.get(Member_.name)));
-        criteria.select(member).orderBy(cb.asc(member.get("name")));
+        Root<Tweet> tweet = criteria.from(Tweet.class);
+        criteria.select(tweet).orderBy(cb.asc(tweet.get("tweetId")));
         return em.createQuery(criteria).getResultList();
     }
+
 }

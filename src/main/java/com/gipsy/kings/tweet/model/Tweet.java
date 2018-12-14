@@ -17,62 +17,74 @@
 package com.gipsy.kings.tweet.model;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @SuppressWarnings("serial")
 @Entity
 @XmlRootElement
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "tweetId"))
 public class Tweet implements Serializable {
 
     @Id
     @SequenceGenerator(name = "TWEET_ID_GENERATOR", sequenceName = "TWEET_SEQ", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TWEET_ID_GENERATOR")
     @Column(name = "tweetId")
-    private Long tweetId;
+    // le tweet id n'est dispo qu'appres l'enregistrement en base
+    private long tweetId;
 
     @NotNull
     @Column(name = "senderId")
-    private Long senderId;
+    private long senderId;
     
     @NotNull
     @Size(min = 1, max = 240)
     @Column(name = "text")
     private String text;
     
-    @NotNull
     @Column(name = "date")
-    private String date;
+    private long date;
 
-    @NotNull
     @Column(name = "urlMedia")
     private String urlMedia;
    
-    public Long getTweetId() {
-        return senderId;
+
+    // la date n'est dispo qu'a la sauvegarde en base !
+    @PrePersist
+    protected void onDate() {
+    	date = Instant.now().toEpochMilli();
+    }
+    
+	public String getUrlMedia() {
+		return urlMedia;
+	}
+
+	public void setUrlMedia(String urlMedia) {
+		this.urlMedia = urlMedia;
+	}
+
+	public long getTweetId() {
+        return tweetId;
     }
     
     public void setTweetId(Long tweetId) {
         this.tweetId = tweetId;
     }
     
-    public Long getSenderId() {
+    public long getSenderId() {
         return senderId;
     }
     
@@ -88,11 +100,12 @@ public class Tweet implements Serializable {
         this.text = text;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
     
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 }
+
