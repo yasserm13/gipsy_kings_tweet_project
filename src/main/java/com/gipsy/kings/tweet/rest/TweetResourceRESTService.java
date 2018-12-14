@@ -132,7 +132,7 @@ public class TweetResourceRESTService {
         Set<ConstraintViolation<Tweet>> violations = validator.validate(tweet);
         
         if (tweet.getSenderId() < 1)
-        	throw new DataFormatException("Negative tweetID");
+        	throw new DataFormatException("Negative sender ID");
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
