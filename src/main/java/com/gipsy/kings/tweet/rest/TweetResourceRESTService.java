@@ -1,9 +1,12 @@
 package com.gipsy.kings.tweet.rest;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -27,10 +30,10 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import com.gipsy.kings.tweet.data.TweetRepository;
-import com.gipsy.kings.tweet.model.TweetEntity;
 import com.gipsy.kings.tweet.model.Tweet;
-import com.gipsy.kings.tweet.service.TweetRegistration;
+import com.gipsy.kings.tweet.model.TweetEntity;
 import com.gipsy.kings.tweet.service.ImageRegistration;
+import com.gipsy.kings.tweet.service.TweetRegistration;
 
 
 @Path("/")
@@ -48,6 +51,15 @@ public class TweetResourceRESTService {
     @Inject
     TweetRegistration registration;
 
+
+  //curl -i    --request GET    http://localhost:8080/gipsy-kings-tweet/tweet/all
+      @GET
+      @Path("/tweet/all")
+      @Produces(MediaType.APPLICATION_JSON)
+      public List<Tweet> listAllTweet() {
+          return repository.findAllTweetOrderedByTweetId();
+      }
+    
     @GET
     @Path("/tweet/{tweetId:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -87,18 +99,18 @@ public class TweetResourceRESTService {
             // Handle bean validation issues typiquement tweet trop long ou un type qui va pas un non null ?
         	// il s'agit d'une erreur 406 je l'ai modififie dans createViolationResponse
             builder = createViolationResponse(ce.getConstraintViolations());
-        } catch (ValidationException e) {
+        } catch (ValidationException | DataFormatException e) {
             // Handle the unique constrain violation tweetid existe deja => ne devrait jamais arrivé
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("erreur", "tweetid existe déjà")
                     .build();
-            builder = Response.status(Response.Status. BAD_REQUEST).entity(jsonFile);
+            builder = Response.status(Response.Status. NOT_ACCEPTABLE).entity(jsonFile);
         } catch (Exception e) {
             // Handle generic exceptions = 
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("erreur", e.getMessage())
                     .build();
-            builder = Response.status(Response.Status. BAD_REQUEST).entity(jsonFile);
+            builder = Response.status(Response.Status. NOT_ACCEPTABLE).entity(jsonFile);
         }
 
         return builder.build();
@@ -117,14 +129,21 @@ public class TweetResourceRESTService {
      * @param member Member to be validated
      * @throws ConstraintViolationException If Bean Validation errors exist
      * @throws ValidationException If member with the same tweetid already exists
+     * @throws DataFormatException 
      */
-    private void validateMember(Tweet tweet) throws ConstraintViolationException, ValidationException {
+    private void validateMember(Tweet tweet) throws ConstraintViolationException, ValidationException, DataFormatException {
         // Create a bean validator and check for issues.
         Set<ConstraintViolation<Tweet>> violations = validator.validate(tweet);
+        
+        if (tweet.getSenderId() < 1)
+        	throw new DataFormatException("Negative tweetID");
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
         }
+        
+        
+        	
 
     }
 
@@ -169,12 +188,12 @@ public class TweetResourceRESTService {
                     .add("urlMedia", tmpstp)
                     .build();
     		builder = Response.ok(jsonFile);
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("error", e.getMessage())
                     .build();
             builder = Response.status(Response.Status.NOT_ACCEPTABLE).entity(jsonFile);
-		}
+		} 
     	
     	return builder.build();
     }

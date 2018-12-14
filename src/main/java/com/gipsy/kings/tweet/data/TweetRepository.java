@@ -16,10 +16,15 @@
  */
 package com.gipsy.kings.tweet.data;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import com.gipsy.kings.tweet.model.Tweet;
 
@@ -33,6 +38,14 @@ public class TweetRepository {
     public Tweet findById(Long tweetId) {
     	System.out.println("recherche tweet : "+tweetId);
         return em.find(Tweet.class, tweetId);
+    }
+    
+    public List<Tweet> findAllTweetOrderedByTweetId() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Tweet> criteria = cb.createQuery(Tweet.class);
+        Root<Tweet> tweet = criteria.from(Tweet.class);
+        criteria.select(tweet).orderBy(cb.asc(tweet.get("tweetId")));
+        return em.createQuery(criteria).getResultList();
     }
 
 }
