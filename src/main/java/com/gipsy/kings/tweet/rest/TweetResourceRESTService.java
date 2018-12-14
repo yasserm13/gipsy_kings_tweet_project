@@ -89,10 +89,16 @@ public class TweetResourceRESTService {
             // Handle bean validation issues typiquement tweet trop long ou un type qui va pas un non null ?
         	// il s'agit d'une erreur 406 je l'ai modififie dans createViolationResponse
             builder = createViolationResponse(ce.getConstraintViolations());
-        } catch (ValidationException | DataFormatException e) {
+        } catch (ValidationException  e) {
             // Handle the unique constrain violation tweetid existe deja => ne devrait jamais arrivé
             JsonObject jsonFile = Json.createObjectBuilder()
                     .add("erreur", "tweetid existe déjà")
+                    .build();
+            builder = Response.status(Response.Status. NOT_ACCEPTABLE).entity(jsonFile);
+        } catch (DataFormatException e) {
+            // Handle the unique constrain violation tweetid existe deja => ne devrait jamais arrivé
+            JsonObject jsonFile = Json.createObjectBuilder()
+                    .add("erreur", e.getMessage())
                     .build();
             builder = Response.status(Response.Status. NOT_ACCEPTABLE).entity(jsonFile);
         } catch (Exception e) {
